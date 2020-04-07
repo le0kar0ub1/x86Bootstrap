@@ -38,7 +38,7 @@ fclean:	clean
 	@rm -f	$(RAWBIN)
 
 run:	re
-	qemu-system-i386 $(RAWBIN)
+	qemu-system-i386 -drive format=raw,file=$(RAWBIN)
 
 re:	fclean	all
 

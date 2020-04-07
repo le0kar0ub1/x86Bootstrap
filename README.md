@@ -4,13 +4,17 @@ x86 MBR bootloader wroten in GNU assembly syntax.
 
 [Some really good explaination...](https://wiki.osdev.org/MBR_(x86))
 
+Multiboot handled by a menu from which you can boot on the 4 MBR partitions.
+
 # Dependencies
 
-* make
+You can compile the only source file with your hands if make is missing.
 
-* as
+  * `make` (dev under V4.3)
 
-* ld
+  * `as` (dev under V2.34)
+
+  * `ld` (dev under V2.34)
 
 # Build
 
