@@ -14,7 +14,7 @@ OBJEXT		:=	.o
 
 ASMEXT		:=	.S
 
-LINKER		:=	bootloader/boostrap.ld
+LINKER		:=	bootloader/bootstrap.ld
 
 RAWBIN		:=	bootstrap.bin
 
