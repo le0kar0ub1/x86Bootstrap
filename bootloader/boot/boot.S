@@ -201,7 +201,16 @@ readVBR:
 sector:
     popa
     jnb load_dos
+    decb 0x11(%bp)
+    jz perror
 
+# lets retry
+    pushw %bp
+    xor %ah, %ah
+    movb (%bp), %dl
+    int $0x13
+    pop %bp
+    jmp ExtensionChecked
 
 load_dos:
     /* if not DOS loader then fault */
