@@ -1,6 +1,6 @@
 # SecondBreath
 
-x86 MBR bootloader wroten in GNU syntax assembly.
+x86 MBR bootloader wroten in GNU assembly syntax.
 
 [Some really good explaination...](https://wiki.osdev.org/MBR_(x86))
 
@@ -15,11 +15,6 @@ x86 MBR bootloader wroten in GNU syntax assembly.
 # build
 
 `make`
-
-
-# Some informations
-
-Because we are not savage and `org` keyword isn't implemented on GNU assembly we need a linker script.
 
 ## Master Boot Record Format
 
@@ -54,3 +49,9 @@ Offset1| Size (bytes) | Description
 0x05   |3             | CHS address of last partition sector
 0x08   |4             | LBA of partition start
 0x0C   |4             | Number of sectors in partition
+
+# Epilogue
+
+Just for the fun.
+
+Feel free to fork, use, improve.

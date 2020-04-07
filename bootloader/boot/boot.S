@@ -51,9 +51,6 @@ _bootloader:
     mov $0x105, %cx
     int $0x10
 
-    movw $_bootmsg, %si
-    call bprintstr
-
     xorw %cx, %cx
     movw $(0x430 + RELOCATED), %bp # yes its the lastest register we got X)
     xorw %bx, %bx
@@ -71,6 +68,8 @@ dump_partition:
         movb $0xE, %ah
         movb %cl, %al
         addb $0x31, %al
+        int $0x10
+        mov $0xA, %al
         int $0x10
 
         cmpb $0x1, bpartactive 
@@ -94,7 +93,6 @@ user_boot:
     mov $0x0, %bh
     mov %si, %dx
     imulw $0x100, %dx
-    addw $(0x100 * 6 + 7), %dx
     int $0x10
 
     mov $0x0, %ah
@@ -129,9 +127,6 @@ user_boot:
 
 booting:
     pushw %si
-.if $scdbreath == 1
-    jmp _scdbreath
-.endif
     mov $0x2, %ah
     mov $0x0, %dx
     int $0x10
@@ -147,20 +142,80 @@ booting:
     movb %dl, (%bp)
 
     push %bp
+
     movb $0x0, 0x10(%bp)
     movb $0x5, 0x11(%bp)
 
-
-    /* READ OUR SECTOR */
+    /* Check for extension present*/
     mov $0x41, %ah
     mov $0x55AA, %bx
     int $0x13
 
-read_sector:
+    pop %bp
+
+    jc ExtensionChecked
+    andw $0b1, %cx
+    jz ExtensionChecked
+    cmpw $0xAA55, %bx
+    jz ExtensionChecked
+
+    incb 10(%bp)
 
 
-.hang:
-    jmp .hang
+ExtensionChecked:
+    pusha
+    cmpb $0x0, 10(%bp)
+    jz readVBR
+
+/* else got extension */
+    pushl $0x0
+    pushl 8(%bp)
+    pushw $0x0
+    pushw $0x7C00
+    pushw $0x1
+    pushw $0x10
+
+    movb $0x42, %ah
+    movb (%bp), %dl
+    movw %sp, %si
+    int $0x13
+
+    lahf
+    addw $0x10, %sp
+    sahf
+
+    jmp sector
+
+
+/* VBR Extended */
+
+readVBR:
+    mov $0x201, %ax
+    mov $0x7C00, %bx
+    mov 3(%bp), %ch
+    mov 2(%bp), %cl
+    mov 1(%bp), %dh
+    mov 0(%bp), %dl
+    int $0x13
+
+sector:
+    popa
+    jnb load_dos
+
+
+load_dos:
+    /* if not DOS loader then fault */
+    cmp $0x0, 0x7C00
+    jne perror
+    cmpw $0xAA55, 0x7DFE
+    jne perror
+
+    mov (%bp), %dx
+    xorb %dh, %dh
+    ljmp $0x0, $0x7C00 # jump on the DOS loader
+
+
+/* Tools */
 
 bprintstr:
     lodsb
@@ -178,7 +233,7 @@ perror:
     call bprintstr
 reDie:
     xorb %ah, %ah
-    int $0x10
+    int $0x16
     cmp $0x011B, %ax
     jne reDie
 
@@ -194,8 +249,7 @@ biosCleanScreen:
     int $0x10
     ret
 
-_bootmsg:  .asciz " *\r\n* SecondBreath bootloader\r\n *\r\n\n\n"
-_partbase: .asciz "\r\n         Partition "
+_partbase: .asciz "\r Partition "
 _active:   .asciz " (BOOTABLE)"
 _error:    .asciz "Error occcured"
 bpartactive: .byte 0x0

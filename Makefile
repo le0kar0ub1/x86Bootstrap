@@ -1,5 +1,5 @@
  #
-# Simple Makefile to compile our booloader
+# Simple Makefile to compile our bootloader
  #
 
 BUILD		:=	build
@@ -14,9 +14,9 @@ OBJEXT		:=	.o
 
 ASMEXT		:=	.S
 
-LINKER		:=	bootloader/scdbreath.ld
+LINKER		:=	bootloader/boostrap.ld
 
-RAWBIN		:=	scdbreath.bin
+RAWBIN		:=	bootstrap.bin
 
 LNKFLAGS	:=	-n					\
 				-T $(LINKER)		\
@@ -28,7 +28,6 @@ SRCDIR		:=	$(addprefix bootloader/, boot)
 SOURCES		:=	$(wildcard $(addsuffix /*$(ASMEXT), $(SRCDIR)))
 
 OBJECTS		:=	$(patsubst %$(ASMEXT), $(BUILD)/%$(OBJEXT), $(SOURCES))
-
 
 all:	$(RAWBIN)
 
