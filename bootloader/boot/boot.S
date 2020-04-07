@@ -268,7 +268,16 @@ _active:   .asciz " (BOOTABLE)"
 _error:    .asciz "Error occcured"
 bpartactive: .byte 0x0
 
-.fill 510-(.-_bootloader), 1, 0
+.fill 0x1B8 - (. - _bootloader), 1, 0
+
+ id:       .fill 0x4, 1, 0
+
+ reserved: .fill 0x2, 1, 0
+
+ part1: .fill 16, 1, 0
+ part2: .fill 16, 1, 0
+ part3: .fill 16, 1, 0
+ part4: .fill 16, 1, 0
 
 .section .bootmagic, "ax"
 .word MAGICMBR

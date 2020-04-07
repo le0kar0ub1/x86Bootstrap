@@ -9,6 +9,7 @@ SECTIONS
 	.init.boot :
 	{
 		*(.bootloader)
+		*(.bootpart)
 		*(.bootmagic)
 	}
 	. = __BOOT_SECTOR_FORCE_END;
