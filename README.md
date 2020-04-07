@@ -1,10 +1,10 @@
-# SecondBreath
+# x86Bootstrap
 
 x86 MBR bootloader wroten in GNU assembly syntax.
 
 [Some really good explaination...](https://wiki.osdev.org/MBR_(x86))
 
-# dependencies
+# Dependencies
 
 * make
 
@@ -12,9 +12,13 @@ x86 MBR bootloader wroten in GNU assembly syntax.
 
 * ld
 
-# build
+# Build
 
 `make`
+
+# Install
+
+`dd if=bootstrap.bin of=/dev/sdX bs=446 count=1`
 
 ## Master Boot Record Format
 

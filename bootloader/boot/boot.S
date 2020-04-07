@@ -55,9 +55,14 @@ _bootloader:
     movw $(0x430 + RELOCATED), %bp # yes its the lastest register we got X)
     xorw %bx, %bx
 
-    movb $0x1, bpartactive
 dump_partition:
     pushw %bp
+
+    movb $0x2, %ah
+    movw $(0x100 * 9 + 32), %dx
+    addb %cl, %dh
+    int $0x10
+
     cmpb $0x80, (%bp)
     jne printBasePart
     movb $0x1, bpartactive
@@ -89,10 +94,10 @@ dump_partition:
 
     xorw %si, %si
 user_boot:
-    mov $0x2, %ah
-    mov $0x0, %bh
+    movb $0x2, %ah
     mov %si, %dx
-    imulw $0x100, %dx
+    shl $0x8, %dx 
+    addw $(0x100 * 9 + 30), %dx
     int $0x10
 
     mov $0x0, %ah
@@ -258,7 +263,7 @@ biosCleanScreen:
     int $0x10
     ret
 
-_partbase: .asciz "\r Partition "
+_partbase: .asciz "Partition "
 _active:   .asciz " (BOOTABLE)"
 _error:    .asciz "Error occcured"
 bpartactive: .byte 0x0
