@@ -23,30 +23,21 @@ LNKFLAGS	:=	-n					\
 				-o $(RAWBIN)		\
 				--oformat binary
 
-SRCDIR		:=	$(addprefix bootloader/, boot)
+SOURCE		:=	bootloader/boot/boot.S
 
-SOURCES		:=	$(wildcard $(addsuffix /*$(ASMEXT), $(SRCDIR)))
-
-OBJECTS		:=	$(patsubst %$(ASMEXT), $(BUILD)/%$(OBJEXT), $(SOURCES))
+OBJECT		:=	build/bootloader/boot/boot.o
 
 all:	$(RAWBIN)
 
 clean:
-	@rm -rf	$(BUILD)
+	@rm -rf	$(BUILD) $(RAWBIN)
 
-fclean:	clean
-	@rm -f	$(RAWBIN)
-
-run:	re
+run:	clean
 	qemu-system-i386 -drive format=raw,file=$(RAWBIN)
 
-re:	fclean	all
-
-$(RAWBIN):	$(OBJECTS)
-	@$(LNK) $(LNKFLAGS) $(OBJECTS)
-	@-echo "   LNK    $(RAWBIN)"
-
-$(BUILD)/%$(OBJEXT): %$(ASMEXT)
-	@mkdir -p $(shell dirname $@)
-	@$(GAS) $(GASFLAGS) -c $< -o $@
+$(RAWBIN):
+	@mkdir -p $(shell dirname $(OBJECT))
+	@$(GAS) $(GASFLAGS) -c $(SOURCE) -o $(OBJECT)
 	@-echo "    AS    $@"
+	@$(LNK) $(LNKFLAGS) $(OBJECT)
+	@-echo "   LNK    $(RAWBIN)"
