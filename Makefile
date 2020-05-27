@@ -32,7 +32,7 @@ all:	$(RAWBIN)
 clean:
 	@rm -rf	$(BUILD) $(RAWBIN)
 
-run:	clean
+run:
 	qemu-system-i386 -drive format=raw,file=$(RAWBIN)
 
 $(RAWBIN):
