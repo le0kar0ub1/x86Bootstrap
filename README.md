@@ -58,6 +58,10 @@ Offset1| Size (bytes) | Description
 0x08   |4             | LBA of partition start
 0x0C   |4             | Number of sectors in partition
 
+## Runtime
+
+![runtime](doc/runtime.png)
+
 # Epilogue
 
 Just for the fun.

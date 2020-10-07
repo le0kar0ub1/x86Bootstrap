@@ -219,7 +219,7 @@ sector:
 
 load_dos:
     /* if not DOS loader then fault */
-    cmp $0x0, 0x7C00
+    cmpw $0x0, 0x7C00
     jne perror
     cmpw $0xAA55, 0x7DFE
     jne perror
